@@ -1,0 +1,79 @@
+<?php
+
+namespace App\Providers;
+
+use Illuminate\Cache\RateLimiting\Limit;
+use Illuminate\Foundation\Support\Providers\RouteServiceProvider as ServiceProvider;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\RateLimiter;
+use Illuminate\Support\Facades\Route;
+
+class RouteServiceProvider extends ServiceProvider
+{
+    /**
+     * The path to the "home" route for your application.
+     *
+     * Typically, users are redirected here after authentication.
+     *
+     * @var string
+     */
+    public const HOME = '/home';
+
+    /**
+     * Define your route model bindings, pattern filters, and other route configuration.
+     */
+    public function boot(): void
+    {
+        $this->configureRateLimiting();
+
+        $this->routes(function () {
+            Route::middleware('api')
+                ->prefix('api')
+                ->group(base_path('routes/api.php'));
+
+            // kitchen routes
+            Route::middleware('api')
+                ->prefix('')
+                ->group(base_path('routes/Custom Routes/kitchen.php'));
+
+            // location routes
+            Route::middleware('api')
+                ->prefix('')
+                ->group(base_path('routes/Custom Routes/locations/location.php'));
+
+            // sub-location routes
+            Route::middleware('api')
+                ->prefix('')
+                ->group(base_path('routes/Custom Routes/locations/subLocation.php'));
+
+            // products routes
+            Route::middleware('api')
+                ->prefix('')
+                ->group(base_path('routes/Custom Routes/product.php'));
+
+            // roles routes
+            Route::middleware('api')
+                ->prefix('')
+                ->group(base_path('routes/Custom Routes/role.php'));
+
+            // users routes
+            Route::middleware('api')
+                ->prefix('')
+                ->group(base_path('routes/Custom Routes/user.php'));
+
+
+            Route::middleware('web')
+                ->group(base_path('routes/web.php'));
+        });
+    }
+
+    /**
+     * Configure the rate limiters for the application.
+     */
+    protected function configureRateLimiting(): void
+    {
+        RateLimiter::for('api', function (Request $request) {
+            return Limit::perMinute(60)->by($request->user()?->id ?: $request->ip());
+        });
+    }
+}
