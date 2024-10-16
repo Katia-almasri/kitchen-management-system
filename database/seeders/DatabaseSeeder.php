@@ -17,11 +17,11 @@ class DatabaseSeeder extends Seeder
     {
 
         // call the seeders
-        // $this->call(RestaurantSeeder::class);
-        // $this->call(KitchenSeeder::class);
-        // $this->call(LocationSeeder::class);
-        // $this->call(SubLocationSeeder::class);
-        // $this->call(ProductSeeder::class);
+        $this->call(RestaurantSeeder::class);
+        $this->call(KitchenSeeder::class);
+        $this->call(LocationSeeder::class);
+        $this->call(SubLocationSeeder::class);
+        $this->call(ProductSeeder::class);
 
         User::factory(10)->create();
     }
